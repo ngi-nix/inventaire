@@ -11,6 +11,7 @@ in
     nixpkgs.overlays = [(self: super: {
         erlangR19 = super.erlangR20;
         inventaire = inventaire.inventaire;
+        inventaire-prerender = inventaire.prerender;
     })];
 
     # services.timesyncd.enable = false;
