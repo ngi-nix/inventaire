@@ -2,27 +2,33 @@
 with lib;
 let
   cfg = config.services.inventaire;
-  statePath = pkgs.inventaire.statePath;
   user = "inventaire";
   group = "inventaire";
   nginxGroup = config.services.nginx.group;
   couchGroup = config.services.couchdb.group;
+  statePath = cfg.statePath;
+  config = cfg.config;
   nginxConfig = import ./nginx-config.nix;
+  inventair = pkgs.inventair.server statePath;
 in
 {
   options.services.inventaire = {
     enable = mkEnableOption "Enable inventaire server";
 
-    # TODO: make package customizable
+    statePath = mkOption {
+      default="/var/lib/inventaire";
+      description="Folder to store runtime data (Database, uploads, etc)";
+      type=pkgs.lib.types.string;
+    };
+
+    config = mkOption {
+      default="";
+      description="Inventair configuration. (Typically a JavaScript file overrideing https://github.com/inventaire/inventaire/blob/master/config/default.js)";
+      type=pkgs.lib.types.string;
+    };
+
   };
-
-
-
-
-
-  config = mkIf cfg.enable {
-
-
+  config = mkIf cfg.enable  {
 
     systemd.tmpfiles.rules = [
       "d ${statePath} 0750 ${user} ${group} - -"
@@ -37,7 +43,6 @@ in
       "d ${statePath}/nginx 0770 ${user} ${group} - -"
       "d ${statePath}/nginx/tmp 0770 ${user} ${group} - -"
       "d ${statePath}/nginx/resize 0770 ${user} ${group} - -"
-
     ];
 
 
@@ -47,7 +52,7 @@ in
       after = [ "network.target" ];
       description = "Start the inventaire server.";
       serviceConfig = {
-        WorkingDirectory = "${pkgs.inventaire-prerender}/lib/node_modules/prerender";
+        WorkingDirectory = "${pkgs.inventaire.prerender}/lib/node_modules/prerender";
         ExecStart = ''${pkgs.nodejs}/bin/node server.js'';
         User = user;
       };
@@ -59,7 +64,7 @@ in
       after = [ "network.target" ];
       description = "Start the inventaire server.";
       serviceConfig = {
-        WorkingDirectory = "${pkgs.inventaire}/lib/node_modules/inventaire/";
+        WorkingDirectory = "${inventaire}/lib/node_modules/inventaire/";
         ExecStart = "${pkgs.nodejs}/bin/node server/server.js";
         User = user;
         Group = group;
@@ -68,7 +73,7 @@ in
 
 
 
-    services.nginx = nginxConfig { domain-name = "0.0.0.0"; prerender-instance = "http://localhost:3000"; project-root = "${pkgs.inventaire}/lib/node_modules/"; statePath = statePath; };
+    services.nginx = nginxConfig { domain-name = "0.0.0.0"; prerender-instance = "http://localhost:3000"; project-root = "${inventaire}/lib/node_modules/"; statePath = statePath; };
 
     systemd.services.nginx.serviceConfig.ReadWritePaths = [ "${statePath}/nginx" ];
 
