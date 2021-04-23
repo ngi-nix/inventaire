@@ -1,0 +1,12 @@
+diff --git a/package.json b/package.json
+index bf3593e1..b3c54f67 100644
+--- a/package.json
++++ b/package.json
+@@ -3,6 +3,7 @@
+   "homepage": "https://inventaire.io",
+   "description": "a libre collaborative resources mapper powered by open-knowledge (server-side)",
+   "main": "server/server.js",
++  "version": "0.0.1",
+   "scripts": {
+     "backup-databases": "./scripts/backup_databases/backup_databases.js",
+     "couch2elastic4sync:init": "./scripts/couch2elastic4sync/init.js",
