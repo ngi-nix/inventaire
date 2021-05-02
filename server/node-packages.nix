@@ -22,6 +22,15 @@ let
         sha512 = "7dV4eu9gBxoM0dAnj/BCFDW9LFU0zvTrkq0ugM7pnHEgguOEeOz1so2ZghEdzviYzQEED0r4EAgpsBChKy1TRQ==";
       };
     };
+    "abort-controller-3.0.0" = {
+      name = "abort-controller";
+      packageName = "abort-controller";
+      version = "3.0.0";
+      src = fetchurl {
+        url = "https://registry.npmjs.org/abort-controller/-/abort-controller-3.0.0.tgz";
+        sha512 = "h8lQ8tacZYnR3vNQTgibj+tODHI5/+l06Au2Pcriv/Gmet0eaj4TwWH41sO9wnHDiQsEj19q0drzdWdeAHtweg==";
+      };
+    };
     "abstract-leveldown-0.12.4" = {
       name = "abstract-leveldown";
       packageName = "abstract-leveldown";
@@ -319,13 +328,13 @@ let
         sha1 = "c9b6bca08d1bc2ea00fc8afb4f1a5fd1e1c66e4e";
       };
     };
-    "blue-cot-6.2.0" = {
+    "blue-cot-6.2.2" = {
       name = "blue-cot";
       packageName = "blue-cot";
-      version = "6.2.0";
+      version = "6.2.2";
       src = fetchurl {
-        url = "https://registry.npmjs.org/blue-cot/-/blue-cot-6.2.0.tgz";
-        sha512 = "bW/iCFfuVJSUsnMd13j625CO12jZ9qdGtephn7XKicq/AcaKd4/3YKP5T+S5HlCj2Qgb9okjoNv+XqFB2fAS9g==";
+        url = "https://registry.npmjs.org/blue-cot/-/blue-cot-6.2.2.tgz";
+        sha512 = "7CEhqVFcPy+ZR5Kx6uR3Vz8VtyhvBacbAVaiERTXw6qJ1FNt0NiEnsBA0rCskm8ykyAonIIGIskEonJCTsANuw==";
       };
     };
     "body-parser-1.18.2" = {
@@ -515,15 +524,6 @@ let
       src = fetchurl {
         url = "https://registry.npmjs.org/color-name/-/color-name-1.1.3.tgz";
         sha1 = "a7d0558bd89c42f795dd42328f740831ca53bc25";
-      };
-    };
-    "combined-stream-1.0.6" = {
-      name = "combined-stream";
-      packageName = "combined-stream";
-      version = "1.0.6";
-      src = fetchurl {
-        url = "https://registry.npmjs.org/combined-stream/-/combined-stream-1.0.6.tgz";
-        sha1 = "723e7df6e801ac5613113a7e445a9b69cb632818";
       };
     };
     "combined-stream-1.0.8" = {
@@ -1219,6 +1219,15 @@ let
         sha1 = "41ae2eeb65efa62268aebfea83ac7d79299b0887";
       };
     };
+    "event-target-shim-5.0.1" = {
+      name = "event-target-shim";
+      packageName = "event-target-shim";
+      version = "5.0.1";
+      src = fetchurl {
+        url = "https://registry.npmjs.org/event-target-shim/-/event-target-shim-5.0.1.tgz";
+        sha512 = "i/2XbnSz/uxRCU6+NdVJgKWDTM427+MqYbkQzD321DuCQJUqOuJKIA0IM2+W2xtYHdKOmZ4dR6fExsd4SXL+WQ==";
+      };
+    };
     "express-4.16.3" = {
       name = "express";
       packageName = "express";
@@ -1390,13 +1399,22 @@ let
         sha1 = "fbc71f0c41adeb37f96c577ad1ed42d8fdacca91";
       };
     };
-    "form-data-2.3.2" = {
+    "form-data-2.3.3" = {
       name = "form-data";
       packageName = "form-data";
-      version = "2.3.2";
+      version = "2.3.3";
       src = fetchurl {
-        url = "https://registry.npmjs.org/form-data/-/form-data-2.3.2.tgz";
-        sha1 = "4970498be604c20c005d4f5c23aecd21d6b49099";
+        url = "https://registry.npmjs.org/form-data/-/form-data-2.3.3.tgz";
+        sha512 = "1lLKB2Mu3aGP1Q/2eCOx0fNbRMe7XdwktwOruhfqqd0rIJWwN4Dh+E3hrPSlDCXnSR7UtZ1N38rVXm+6+MEhJQ==";
+      };
+    };
+    "form-data-4.0.0" = {
+      name = "form-data";
+      packageName = "form-data";
+      version = "4.0.0";
+      src = fetchurl {
+        url = "https://registry.npmjs.org/form-data/-/form-data-4.0.0.tgz";
+        sha512 = "ETEklSGi5t0QMZuiXoA/Q6vcnxcLQP5vdugSpuAyi6SVGi2clPPp+xgEhuMaHC+zGgn31Kd235W35f7Hykkaww==";
       };
     };
     "formatio-1.1.1" = {
@@ -2182,16 +2200,6 @@ let
         sha512 = "UVprBJXite4gPS+3VznfgDSU8PTRuVX0NXwoWW50KLxd2yw4Y1t2JUR5In1itQnudZqRMT9DlAM3Q//9NCjCFw==";
       };
     };
-    "level-geospatial-git+https://github.com/maxlath/level-geospatial.git#5001a8f0a35784a0c81121dae6d2b8b4eb7ea13e" = {
-      name = "level-geospatial";
-      packageName = "level-geospatial";
-      version = "0.0.5";
-      src = fetchgit {
-        url = "https://github.com/maxlath/level-geospatial.git";
-        rev = "5001a8f0a35784a0c81121dae6d2b8b4eb7ea13e";
-        sha256 = "2ea4a4a7e5a59613636b243e3cf90dbe50d0396e0b613ce18b5b1e395b2e5d81";
-      };
-    };
     "level-hooks-4.5.0" = {
       name = "level-hooks";
       packageName = "level-hooks";
@@ -2624,6 +2632,15 @@ let
         sha512 = "2IUgKDhc3J7Uug+FxMXuqIyYzH7gJjXECKe/w43IGgQHTSj3InJi+yAA7T24L9bQMRKiUEHxEX37G5JpVUGLcQ==";
       };
     };
+    "module-alias-2.2.2" = {
+      name = "module-alias";
+      packageName = "module-alias";
+      version = "2.2.2";
+      src = fetchurl {
+        url = "https://registry.npmjs.org/module-alias/-/module-alias-2.2.2.tgz";
+        sha512 = "A/78XjoX2EmNvppVWEhM2oGk3x4lLxnkEA4jTbaK97QKSDjkIoOsKQlfylt/d3kKKi596Qy3NP5XrXJ6fZIC9Q==";
+      };
+    };
     "moment-2.21.0" = {
       name = "moment";
       packageName = "moment";
@@ -2813,12 +2830,12 @@ let
         sha1 = "9c2775e9b55938c63269dff458ef35c264343637";
       };
     };
-    "nodemailer-git+https://github.com/inventaire/Nodemailer.git#9a6b8c4600600024138539671875a388133a1409" = {
+    "nodemailer-git+ssh://git@github.com/inventaire/Nodemailer.git#9a6b8c4600600024138539671875a388133a1409" = {
       name = "nodemailer";
       packageName = "nodemailer";
       version = "1.9.0";
       src = fetchgit {
-        url = "https://github.com/inventaire/Nodemailer.git";
+        url = "ssh://git@github.com/inventaire/Nodemailer.git";
         rev = "9a6b8c4600600024138539671875a388133a1409";
         sha256 = "e4e44024d23c7d778d22e5a43fe11ae2362cbc7db4b5099774debd3349fea99f";
       };
@@ -4493,7 +4510,7 @@ let
     name = "inventaire";
     packageName = "inventaire";
     version = "0.0.1";
-    src = ./.;
+    src = ../../../../../../tmp/tmp.dTO7wUaW9n;
     dependencies = [
       sources."@babel/code-frame-7.5.5"
       (sources."@babel/highlight-7.5.0" // {
@@ -4503,6 +4520,7 @@ let
           sources."supports-color-5.5.0"
         ];
       })
+      sources."abort-controller-3.0.0"
       sources."abstract-leveldown-6.2.2"
       sources."acorn-7.1.1"
       sources."acorn-jsx-5.1.0"
@@ -4525,7 +4543,7 @@ let
       sources."balanced-match-1.0.0"
       sources."base64-js-0.0.2"
       sources."bcrypt-pbkdf-1.0.1"
-      sources."blue-cot-6.2.0"
+      sources."blue-cot-6.2.2"
       (sources."body-parser-1.18.2" // {
         dependencies = [
           sources."content-type-1.0.4"
@@ -4574,7 +4592,11 @@ let
           sources."oauth-sign-0.9.0"
           sources."punycode-2.1.1"
           sources."qs-6.5.2"
-          sources."request-2.88.2"
+          (sources."request-2.88.2" // {
+            dependencies = [
+              sources."form-data-2.3.3"
+            ];
+          })
           sources."safe-buffer-5.2.0"
           sources."tough-cookie-2.5.0"
           sources."uuid-3.4.0"
@@ -4582,6 +4604,7 @@ let
       })
       sources."color-convert-1.9.1"
       sources."color-name-1.1.3"
+      sources."combined-stream-1.0.8"
       sources."concat-map-0.0.1"
       sources."config-1.26.1"
       sources."contains-path-0.1.0"
@@ -4718,6 +4741,7 @@ let
       sources."estraverse-4.3.0"
       sources."esutils-2.0.3"
       sources."etag-1.8.1"
+      sources."event-target-shim-5.0.1"
       (sources."express-4.16.3" // {
         dependencies = [
           sources."accepts-1.3.5"
@@ -4772,11 +4796,7 @@ let
       sources."flatted-2.0.1"
       sources."foreach-2.0.5"
       sources."forever-agent-0.6.1"
-      (sources."form-data-2.3.2" // {
-        dependencies = [
-          sources."combined-stream-1.0.6"
-        ];
-      })
+      sources."form-data-4.0.0"
       sources."formatio-1.1.1"
       sources."formidable-1.1.1"
       sources."forwarded-0.1.2"
@@ -4873,7 +4893,6 @@ let
       sources."level-compose-0.0.2"
       sources."level-concat-iterator-2.0.1"
       sources."level-errors-2.0.1"
-      sources."level-geospatial-git+https://github.com/maxlath/level-geospatial.git#5001a8f0a35784a0c81121dae6d2b8b4eb7ea13e"
       sources."level-hooks-4.5.0"
       (sources."level-iterator-stream-4.0.2" // {
         dependencies = [
@@ -4977,6 +4996,7 @@ let
           sources."supports-color-5.4.0"
         ];
       })
+      sources."module-alias-2.2.2"
       sources."moment-2.21.0"
       sources."mout-1.0.0"
       sources."ms-2.1.1"
@@ -4998,7 +5018,7 @@ let
       sources."node-fetch-2.6.1"
       sources."node-gyp-build-4.1.1"
       sources."node-polyglot-1.0.0"
-      sources."nodemailer-git+https://github.com/inventaire/Nodemailer.git#9a6b8c4600600024138539671875a388133a1409"
+      sources."nodemailer-git+ssh://git@github.com/inventaire/Nodemailer.git#9a6b8c4600600024138539671875a388133a1409"
       sources."nodemailer-direct-transport-1.1.0"
       sources."nodemailer-express-handlebars-2.0.0"
       sources."nodemailer-smtp-transport-1.1.0"
