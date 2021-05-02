@@ -1,9 +1,9 @@
 { pkgs }:
-{ inventaire-server-src, client, statePath, inventaire-i18n-src}:
+{ inventaire-server-src, client, inventaire-i18n-src}:
 with pkgs;
 let
   patchedSources = stdenv.mkDerivation {
-    name = "${inventaire-server-src.name}-patched";
+    name = "inventaire-server-src-patched";
     src = inventaire-server-src;
     patches = [ ./nix-adaptions.patch ];
     installPhase = ''
@@ -23,7 +23,7 @@ let
       }
   );
 
-  inventaire-server = composition.package.override {
+  inventaire-server = statePath: config: composition.package.override {
 
     preRebuild = ''
       cp -r ${inventaire-i18n-src} ./inventaire-i18n
@@ -32,10 +32,12 @@ let
       cp -r ${client}/* ./client/public
 
       ln -s ${statePath}/client/uploads ./client/uploads
-      ln -s ${statePath}/config/.sessions_keys config/.sessions_keys
+      ln -s ${statePath}/config/.sessions_keys ./config/.sessions_keys
       ln -s ${statePath}/storage ./storage
 
-      ln -s ${statePath}/db/couchdb/design_docs/groups_notifications.json db/couchdb/design_docs/groups_notifications.json
+      ln -s ${config} ./config/local.js
+
+      ln -s ${statePath}/db/couchdb/design_docs/groups_notifications.json server/db/couchdb/design_docs/groups_notifications.json
     '';
 
     nativeBuildInputs = [ pkgs.nodePackages.node-gyp-build ];

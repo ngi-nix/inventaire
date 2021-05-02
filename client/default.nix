@@ -3,7 +3,7 @@
 with pkgs;
 let
     patchedSources = stdenv.mkDerivation {
-              name = "${inventaire-client-src.name}-patched";
+              name = "inventaire-client-src-patched";
               src = inventaire-client-src;
               patches = [./nix-adaptions.patch];
               installPhase = ''
@@ -46,6 +46,8 @@ stdenv.mkDerivation {
       patchShebangs ./
 
       mkdir -p ./public/i18n
+
+      ls ${inventaire-i18n-src}
 
       cp -r ${inventaire-i18n-src}/dist/client/* ./public/i18n
       cat ${inventaire-i18n-src}/dist/languages_data.js > ./app/lib/languages_data.js

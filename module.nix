@@ -7,9 +7,9 @@ let
   nginxGroup = config.services.nginx.group;
   couchGroup = config.services.couchdb.group;
   statePath = cfg.statePath;
-  config = cfg.config;
+  configFile = pkgs.writeText "local.js" cfg.config;
   nginxConfig = import ./nginx-config.nix;
-  inventair = pkgs.inventair.server statePath;
+  inventaire = pkgs.inventaire.server statePath configFile;
 in
 {
   options.services.inventaire = {
@@ -18,13 +18,13 @@ in
     statePath = mkOption {
       default="/var/lib/inventaire";
       description="Folder to store runtime data (Database, uploads, etc)";
-      type=pkgs.lib.types.string;
+      type=types.str;
     };
 
     config = mkOption {
       default="";
       description="Inventair configuration. (Typically a JavaScript file overrideing https://github.com/inventaire/inventaire/blob/master/config/default.js)";
-      type=pkgs.lib.types.string;
+      type=types.str;
     };
 
   };
