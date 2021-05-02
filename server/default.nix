@@ -35,7 +35,7 @@ let
       ln -s ${statePath}/config/.sessions_keys ./config/.sessions_keys
       ln -s ${statePath}/storage ./storage
 
-      ln -s ${config} ./config/local.js
+      cp ${config} ./config/local.js
 
       ln -s ${statePath}/db/couchdb/design_docs/groups_notifications.json server/db/couchdb/design_docs/groups_notifications.json
     '';
