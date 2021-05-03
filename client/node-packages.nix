@@ -1822,12 +1822,12 @@ let
         sha1 = "7ca946434eeefbde1a553605c74b7049b6dfafc1";
       };
     };
-    "backbone.marionette-git+https://github.com/inventaire/backbone.marionette.git#8c02140eae81ae5a588b67208f2b4ad1cfb6edd3" = {
+    "backbone.marionette-git+ssh://git@github.com/inventaire/backbone.marionette.git#8c02140eae81ae5a588b67208f2b4ad1cfb6edd3" = {
       name = "backbone.marionette";
       packageName = "backbone.marionette";
       version = "2.4.1";
       src = fetchgit {
-        url = "https://github.com/inventaire/backbone.marionette.git";
+        url = "ssh://git@github.com/inventaire/backbone.marionette.git";
         rev = "8c02140eae81ae5a588b67208f2b4ad1cfb6edd3";
         sha256 = "3d7ededba12d9d314573512d7b5aee843ae0bd3490fb8b2c32df62e9a0ad5e08";
       };
@@ -2201,15 +2201,6 @@ let
         sha1 = "a8115c55e4a702fe4d150abd3872822a7e09fc98";
       };
     };
-    "chalk-2.4.1" = {
-      name = "chalk";
-      packageName = "chalk";
-      version = "2.4.1";
-      src = fetchurl {
-        url = "https://registry.npmjs.org/chalk/-/chalk-2.4.1.tgz";
-        sha512 = "ObN6h1v2fTJSmUXoS3nMQ92LbDK9be4TV+6G+omQlGJFdcUX5heKi1LZ1YnRMIgwTLEj3E24bT6tYni50rlCfQ==";
-      };
-    };
     "chalk-2.4.2" = {
       name = "chalk";
       packageName = "chalk";
@@ -2417,15 +2408,6 @@ let
         sha512 = "RRECPsj7iu/xb5oKYcsFHSppFNnsj/52OVTRKb4zP5onXwVF3zVmmToNcOfGC+CRDpfK/U584fMg38ZHCaElKQ==";
       };
     };
-    "color-name-1.1.3" = {
-      name = "color-name";
-      packageName = "color-name";
-      version = "1.1.3";
-      src = fetchurl {
-        url = "https://registry.npmjs.org/color-name/-/color-name-1.1.3.tgz";
-        sha1 = "a7d0558bd89c42f795dd42328f740831ca53bc25";
-      };
-    };
     "color-name-1.1.4" = {
       name = "color-name";
       packageName = "color-name";
@@ -2469,15 +2451,6 @@ let
       src = fetchurl {
         url = "https://registry.npmjs.org/commander/-/commander-2.20.3.tgz";
         sha512 = "GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==";
-      };
-    };
-    "commander-2.9.0" = {
-      name = "commander";
-      packageName = "commander";
-      version = "2.9.0";
-      src = fetchurl {
-        url = "https://registry.npmjs.org/commander/-/commander-2.9.0.tgz";
-        sha1 = "9c99094176e12240cb22d6c5146098400fe0f7d4";
       };
     };
     "commander-4.1.1" = {
@@ -2631,24 +2604,6 @@ let
       src = fetchurl {
         url = "https://registry.npmjs.org/copy-descriptor/-/copy-descriptor-0.1.1.tgz";
         sha1 = "676f6eb3c39997c2ee1ac3a924fd6124748f578d";
-      };
-    };
-    "copy-paste-1.3.0" = {
-      name = "copy-paste";
-      packageName = "copy-paste";
-      version = "1.3.0";
-      src = fetchurl {
-        url = "https://registry.npmjs.org/copy-paste/-/copy-paste-1.3.0.tgz";
-        sha1 = "a7e6c4a1c28fdedf2b081e72b97df2ef95f471ed";
-      };
-    };
-    "copy2cb-1.0.4" = {
-      name = "copy2cb";
-      packageName = "copy2cb";
-      version = "1.0.4";
-      src = fetchurl {
-        url = "https://registry.npmjs.org/copy2cb/-/copy2cb-1.0.4.tgz";
-        sha512 = "mHkFm3Dk6c8yTSfp3IdqUyNHhZ8uyZwvcEGy/27LPD4sNsOm5fNUF/s9qzfCeqt6cztBDh+hAhIXOk7WzwzT3A==";
       };
     };
     "core-js-compat-3.8.0" = {
@@ -4512,15 +4467,6 @@ let
       src = fetchurl {
         url = "https://registry.npmjs.org/graceful-fs/-/graceful-fs-4.2.4.tgz";
         sha512 = "WjKPNJF79dtJAVniUlGGWHYGz2jWxT6VhN/4m1NdkbZ2nOsEF+cI1Edgql5zCRhs/VsQYRvrXctxktVXZUkixw==";
-      };
-    };
-    "graceful-readlink-1.0.1" = {
-      name = "graceful-readlink";
-      packageName = "graceful-readlink";
-      version = "1.0.1";
-      src = fetchurl {
-        url = "https://registry.npmjs.org/graceful-readlink/-/graceful-readlink-1.0.1.tgz";
-        sha1 = "4cafad76bc62f02fa039b2f94e9a3dd3a391a725";
       };
     };
     "growl-1.10.5" = {
@@ -6692,12 +6638,12 @@ let
         sha512 = "CbpcIo7C3eMu3dL1c3d0xw449fHIGALIJsRP4DDPHpyiW8vcriNY7ubh9TE4zEKfSxscY7PjeFnshE7h75ynjQ==";
       };
     };
-    "node-polyglot-git+https://github.com/inventaire/polyglot.js.git#9804c41724aa78bc27d3c05c6281bef87751183d" = {
+    "node-polyglot-git+ssh://git@github.com/inventaire/polyglot.js.git#9804c41724aa78bc27d3c05c6281bef87751183d" = {
       name = "node-polyglot";
       packageName = "node-polyglot";
       version = "2.4.0";
       src = fetchgit {
-        url = "https://github.com/inventaire/polyglot.js.git";
+        url = "ssh://git@github.com/inventaire/polyglot.js.git";
         rev = "9804c41724aa78bc27d3c05c6281bef87751183d";
         sha256 = "457be9aa96fa5524ac7e6fa81f2881fe5102a302a0fd45027e109211d631e06e";
       };
@@ -7033,15 +6979,6 @@ let
       src = fetchurl {
         url = "https://registry.npmjs.org/opener/-/opener-1.5.2.tgz";
         sha512 = "ur5UIdyw5Y7yEj9wLzhqXiy6GZ3Mwx0yGI+5sMn2r0N0v3cKJvUmFH5yPP+WXh9e0xfyzyJX95D8l088DNFj7A==";
-      };
-    };
-    "opn-4.0.2" = {
-      name = "opn";
-      packageName = "opn";
-      version = "4.0.2";
-      src = fetchurl {
-        url = "https://registry.npmjs.org/opn/-/opn-4.0.2.tgz";
-        sha1 = "7abc22e644dff63b0a96d5ab7f2790c0f01abc95";
       };
     };
     "opn-5.5.0" = {
@@ -9780,15 +9717,6 @@ let
         sha512 = "yhy/sQYxR5BkC98CY7o31VGsg014AKLEPxdfhora76l36hD9Rdy5NZA/Ocn6yayNPgSamYdtX2rFJdcv07AYVw==";
       };
     };
-    "sync-exec-0.6.2" = {
-      name = "sync-exec";
-      packageName = "sync-exec";
-      version = "0.6.2";
-      src = fetchurl {
-        url = "https://registry.npmjs.org/sync-exec/-/sync-exec-0.6.2.tgz";
-        sha1 = "717d22cc53f0ce1def5594362f3a89a2ebb91105";
-      };
-    };
     "table-5.4.6" = {
       name = "table";
       packageName = "table";
@@ -10644,15 +10572,6 @@ let
         sha512 = "QGkOQc8XL6Bt5PwnsExKBPuMKBxnGxWWW3fU55Xt4feHozMUhdUMaBCk290qpm/wG5u/RSKzwdAC4i51YigihA==";
       };
     };
-    "wikidata-cli-3.0.6" = {
-      name = "wikidata-cli";
-      packageName = "wikidata-cli";
-      version = "3.0.6";
-      src = fetchurl {
-        url = "https://registry.npmjs.org/wikidata-cli/-/wikidata-cli-3.0.6.tgz";
-        sha1 = "8ac0d9e6fc82fce8296be350d73c3a51f12f1aac";
-      };
-    };
     "wikidata-lang-2.0.11" = {
       name = "wikidata-lang";
       packageName = "wikidata-lang";
@@ -10660,15 +10579,6 @@ let
       src = fetchurl {
         url = "https://registry.npmjs.org/wikidata-lang/-/wikidata-lang-2.0.11.tgz";
         sha512 = "1Vkkj61BkcXmbk3Mn99EFuVAVZMlN2W2uIujf86NZBUdLqlNKaQnkEgC6QlS9nR3sXfhM5pPaJcZ5R44p91BGw==";
-      };
-    };
-    "wikidata-sdk-4.0.6" = {
-      name = "wikidata-sdk";
-      packageName = "wikidata-sdk";
-      version = "4.0.6";
-      src = fetchurl {
-        url = "https://registry.npmjs.org/wikidata-sdk/-/wikidata-sdk-4.0.6.tgz";
-        sha1 = "7893f4017effed3acd77721b76afd7f8b740475c";
       };
     };
     "wikidata-sdk-5.16.2" = {
@@ -10779,13 +10689,13 @@ let
         sha1 = "a5c6d532be656e23db820efb943a1f04998d63af";
       };
     };
-    "y18n-4.0.0" = {
+    "y18n-4.0.3" = {
       name = "y18n";
       packageName = "y18n";
-      version = "4.0.0";
+      version = "4.0.3";
       src = fetchurl {
-        url = "https://registry.npmjs.org/y18n/-/y18n-4.0.0.tgz";
-        sha512 = "r9S/ZyXu/Xu9q1tYlpsLIsa3EeLXXk0VwlxqTcFRfg9EhMW+17kbt9G0NrgCmhGb5vT2hyhJZLfDGx+7+5Uj/w==";
+        url = "https://registry.npmjs.org/y18n/-/y18n-4.0.3.tgz";
+        sha512 = "JKhqTOwSrqNA1NY5lSztJ1GrBiUodLMmIZuLiDaMRJ+itFd+ABVE8XBjOvIWL+rSqNDC74LCSFmlb/U4UZ4hJQ==";
       };
     };
     "yallist-4.0.0" = {
@@ -10865,7 +10775,7 @@ let
     name = "inventaire-client";
     packageName = "inventaire-client";
     version = "0.0.0";
-    src = ../../../../../../tmp/tmp.1ZuvpJtcaF;
+    src = ../../../../../../tmp/tmp.kftEq4Pw4y;
     dependencies = [
       sources."@babel/code-frame-7.10.4"
       sources."@babel/compat-data-7.12.7"
@@ -11125,7 +11035,7 @@ let
       sources."backbone-filtered-collection-0.4.0"
       sources."backbone-nested-2.0.4"
       sources."backbone.babysitter-0.1.12"
-      sources."backbone.marionette-git+https://github.com/inventaire/backbone.marionette.git#8c02140eae81ae5a588b67208f2b4ad1cfb6edd3"
+      sources."backbone.marionette-git+ssh://git@github.com/inventaire/backbone.marionette.git#8c02140eae81ae5a588b67208f2b4ad1cfb6edd3"
       sources."backbone.wreqr-1.4.0"
       sources."bail-1.0.5"
       sources."balanced-match-1.0.0"
@@ -11220,11 +11130,10 @@ let
       sources."collection-visit-1.0.0"
       sources."color-3.1.3"
       sources."color-convert-1.9.1"
-      sources."color-name-1.1.3"
+      sources."color-name-1.1.4"
       sources."color-string-1.5.4"
       sources."colorette-1.2.1"
       sources."combined-stream-1.0.6"
-      sources."commander-2.9.0"
       sources."commondir-1.0.1"
       sources."component-emitter-1.3.0"
       (sources."compressible-2.0.18" // {
@@ -11256,15 +11165,6 @@ let
       sources."cookie-0.4.0"
       sources."cookie-signature-1.0.6"
       sources."copy-descriptor-0.1.1"
-      sources."copy-paste-1.3.0"
-      (sources."copy2cb-1.0.4" // {
-        dependencies = [
-          sources."ansi-styles-3.2.1"
-          sources."chalk-2.4.1"
-          sources."has-flag-3.0.0"
-          sources."supports-color-5.5.0"
-        ];
-      })
       (sources."core-js-compat-3.8.0" // {
         dependencies = [
           sources."semver-7.0.0"
@@ -11529,7 +11429,6 @@ let
           sources."ansi-styles-4.3.0"
           sources."chalk-4.1.0"
           sources."color-convert-2.0.1"
-          sources."color-name-1.1.4"
           sources."debug-4.3.1"
           sources."fast-deep-equal-3.1.3"
           sources."globals-12.4.0"
@@ -11712,7 +11611,6 @@ let
       sources."globby-6.1.0"
       sources."globule-1.3.2"
       sources."graceful-fs-4.2.4"
-      sources."graceful-readlink-1.0.1"
       sources."growl-1.10.5"
       sources."gzip-size-6.0.0"
       sources."handle-thing-2.0.1"
@@ -11914,7 +11812,6 @@ let
           sources."ansi-styles-4.3.0"
           sources."chalk-4.1.0"
           sources."color-convert-2.0.1"
-          sources."color-name-1.1.4"
           sources."has-flag-4.0.0"
           sources."supports-color-7.2.0"
         ];
@@ -12065,7 +11962,7 @@ let
           sources."uuid-3.4.0"
         ];
       })
-      sources."node-polyglot-git+https://github.com/inventaire/polyglot.js.git#9804c41724aa78bc27d3c05c6281bef87751183d"
+      sources."node-polyglot-git+ssh://git@github.com/inventaire/polyglot.js.git#9804c41724aa78bc27d3c05c6281bef87751183d"
       sources."node-releases-1.1.67"
       (sources."node-sass-5.0.0" // {
         dependencies = [
@@ -12141,7 +12038,6 @@ let
       sources."once-1.4.0"
       sources."onetime-5.1.2"
       sources."opener-1.5.2"
-      sources."opn-4.0.2"
       sources."optionator-0.9.1"
       sources."original-1.0.2"
       sources."outlayer-2.1.1"
@@ -13315,7 +13211,6 @@ let
           sources."chalk-2.4.2"
         ];
       })
-      sources."sync-exec-0.6.2"
       (sources."table-5.4.6" // {
         dependencies = [
           sources."ajv-6.12.6"
@@ -13490,7 +13385,6 @@ let
           sources."ansi-styles-4.3.0"
           sources."chalk-4.1.0"
           sources."color-convert-2.0.1"
-          sources."color-name-1.1.4"
           sources."commander-6.2.1"
           sources."has-flag-4.0.0"
           sources."supports-color-7.2.0"
@@ -13561,11 +13455,6 @@ let
       sources."which-2.0.2"
       sources."which-module-2.0.0"
       sources."wide-align-1.1.3"
-      (sources."wikidata-cli-3.0.6" // {
-        dependencies = [
-          sources."wikidata-sdk-4.0.6"
-        ];
-      })
       sources."wikidata-lang-2.0.11"
       sources."wikidata-sdk-5.16.2"
       sources."wildcard-2.0.0"
@@ -13586,7 +13475,7 @@ let
       sources."ws-7.4.2"
       sources."x-is-string-0.1.0"
       sources."xtend-4.0.1"
-      sources."y18n-4.0.0"
+      sources."y18n-4.0.3"
       sources."yallist-4.0.0"
       sources."yaml-1.10.0"
       (sources."yargs-13.3.2" // {
