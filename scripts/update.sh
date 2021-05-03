@@ -13,13 +13,13 @@ patch  server/node-packages.nix --fuzz 3  -i patches/node2nix-node-packages.nix.
 # updating client packages
 CLIENT=$(mktemp -d)
 git clone https://github.com/inventaire/inventaire-client "$CLIENT"
-patch -d "$CLIENT" -p1 < ./client/nix-adaptions.patch
+patch -d "$CLIENT" -p1 < client/nix-adaptions.patch
 rm client/node-packages.nix
 node2nix -i "$CLIENT/package.json" -l "$CLIENT/package-lock.json" -d -14 -c /dev/null -o client/node-packages.nix
 patch  client/node-packages.nix --fuzz 3  -i patches/node2nix-node-packages.nix.patch
 
-pushd prerender
-node2nix -i "package.json" -d -14 -c /dev/null
-popd
+# updating prerender
+node2nix -i prerender/package.json -d -14 -c /dev/null -o prerender/node-packages.nix
+
 # update flake
 nix flake update
