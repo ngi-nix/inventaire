@@ -10,25 +10,25 @@ let
   configFile = pkgs.writeText "local.js" cfg.config;
   nginxConfig = import ./nginx-config.nix;
   inventaire = pkgs.inventaire.server statePath configFile;
-in
-{
+in {
   options.services.inventaire = {
     enable = mkEnableOption "Enable inventaire server";
 
     statePath = mkOption {
-      default="/var/lib/inventaire";
-      description="Folder to store runtime data (Database, uploads, etc)";
-      type=types.str;
+      default = "/var/lib/inventaire";
+      description = "Folder to store runtime data (Database, uploads, etc)";
+      type = types.str;
     };
 
     config = mkOption {
-      default="";
-      description="Inventair configuration. (Typically a JavaScript file overrideing https://github.com/inventaire/inventaire/blob/master/config/default.js)";
-      type=types.str;
+      default = "";
+      description =
+        "Inventair configuration. (Typically a JavaScript file overrideing https://github.com/inventaire/inventaire/blob/master/config/default.js)";
+      type = types.str;
     };
 
   };
-  config = mkIf cfg.enable  {
+  config = mkIf cfg.enable {
 
     systemd.tmpfiles.rules = [
       "d ${statePath} 0750 ${user} ${group} - -"
@@ -45,21 +45,21 @@ in
       "d ${statePath}/nginx/resize 0770 ${user} ${group} - -"
     ];
 
-
     systemd.services.inventaire-prerender = {
 
       wantedBy = [ "multi-user.target" ];
       after = [ "network.target" ];
       description = "Start the inventaire server.";
       serviceConfig = {
-        WorkingDirectory = "${pkgs.inventaire.prerender}/lib/node_modules/prerender";
-        ExecStart = ''${pkgs.nodejs}/bin/node server.js'';
+        WorkingDirectory =
+          "${pkgs.inventaire.prerender}/lib/node_modules/prerender";
+        ExecStart = "${pkgs.nodejs}/bin/node server.js";
         User = user;
       };
     };
 
     systemd.services.inventaire = {
-      path = [pkgs.graphicsmagick];
+      path = [ pkgs.graphicsmagick ];
       wantedBy = [ "multi-user.target" ];
       after = [ "network.target" ];
       description = "Start the inventaire server.";
@@ -71,24 +71,20 @@ in
       };
     };
 
-
-
-    services.nginx = nginxConfig { domain-name = "0.0.0.0"; prerender-instance = "http://localhost:3000"; project-root = "${inventaire}/lib/node_modules/"; statePath = statePath; };
-
-    systemd.services.nginx.serviceConfig.ReadWritePaths = [ "${statePath}/nginx" ];
-
-    users.groups.${group} = {
-      members = [
-        "nginx"
-        "couchdb"
-      ];
+    services.nginx = nginxConfig {
+      domain-name = "0.0.0.0";
+      prerender-instance = "http://localhost:3000";
+      project-root = "${inventaire}/lib/node_modules/";
+      statePath = statePath;
     };
+
+    systemd.services.nginx.serviceConfig.ReadWritePaths =
+      [ "${statePath}/nginx" ];
+
+    users.groups.${group} = { members = [ "nginx" "couchdb" ]; };
     users.users.${user} = {
       group = group;
-      extraGroups = [
-        nginxGroup
-        couchGroup
-      ];
+      extraGroups = [ nginxGroup couchGroup ];
       isSystemUser = true;
     };
 

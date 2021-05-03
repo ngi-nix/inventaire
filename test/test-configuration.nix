@@ -1,12 +1,7 @@
 { config, pkgs, ... }:
-let
-  inventaire = import ../.;
-in
-{
-  imports =
-    [
-      inventaire.nixosModule
-    ];
+let inventaire = import ../.;
+in {
+  imports = [ inventaire.nixosModule ];
   nixpkgs.overlays = [ inventaire.overlay ];
 
   networking.firewall.allowedTCPPorts = [ 80 3006 ];

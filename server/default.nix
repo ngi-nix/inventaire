@@ -1,5 +1,5 @@
 { pkgs }:
-{ inventaire-server-src, client, inventaire-i18n-src}:
+{ inventaire-server-src, client, inventaire-i18n-src }:
 with pkgs;
 let
   patchedSources = stdenv.mkDerivation {
@@ -15,35 +15,30 @@ let
     inherit pkgs nodejs;
     inherit (stdenv.hostPlatform) system;
   };
-  composition = compositionRaw.override ( old:
-      {
-        extraArgs = {
-          src = patchedSources;
-        };
-      }
-  );
+  composition =
+    compositionRaw.override (old: { extraArgs = { src = patchedSources; }; });
 
-  inventaire-server = statePath: config: composition.package.override {
+  inventaire-server = statePath: config:
+    composition.package.override {
 
-    preRebuild = ''
-      cp -r ${inventaire-i18n-src} ./inventaire-i18n
+      preRebuild = ''
+        cp -r ${inventaire-i18n-src} ./inventaire-i18n
 
-      mkdir -p ./client/public
-      cp -r ${client}/* ./client/public
+        mkdir -p ./client/public
+        cp -r ${client}/* ./client/public
 
-      ln -s ${statePath}/client/uploads ./client/uploads
-      ln -s ${statePath}/config/.sessions_keys ./config/.sessions_keys
-      ln -s ${statePath}/storage ./storage
+        ln -s ${statePath}/client/uploads ./client/uploads
+        ln -s ${statePath}/config/.sessions_keys ./config/.sessions_keys
+        ln -s ${statePath}/storage ./storage
 
-      cp ${config} ./config/local.js
+        cp ${config} ./config/local.js
 
-      ln -s ${statePath}/db/couchdb/design_docs/groups_notifications.json server/db/couchdb/design_docs/groups_notifications.json
-    '';
+        ln -s ${statePath}/db/couchdb/design_docs/groups_notifications.json server/db/couchdb/design_docs/groups_notifications.json
+      '';
 
-    nativeBuildInputs = [ pkgs.nodePackages.node-gyp-build ];
-    buildInputs = [ pkgs.graphicsmagick ];
-    statePath = statePath;
+      nativeBuildInputs = [ pkgs.nodePackages.node-gyp-build ];
+      buildInputs = [ pkgs.graphicsmagick ];
+      statePath = statePath;
 
-  };
-in
-inventaire-server
+    };
+in inventaire-server

@@ -1,74 +1,123 @@
-{ domain-name, prerender-instance, prerender-ip ? "0.0.0.0", project-root, statePath }: {
-    enable = true;
-    logError = "syslog:server=unix:/dev/log";
+{ domain-name, prerender-instance, prerender-ip ? "0.0.0.0", project-root
+, statePath }: {
+  enable = true;
+  logError = "syslog:server=unix:/dev/log";
+
+  upstreams.inventaire.extraConfig = ''
+    server 127.0.0.1:3006 fail_timeout=5s;
+    server 127.0.0.1:3007 backup;
+  '';
+
+  commonHttpConfig = ''
+    # Defining a log format arbitrary named "custom"
+    # doc: http://nginx.org/en/docs/http/ngx_http_log_module.html#log_format
+    log_format custom '$remote_addr - $remote_user "$request" $status'
+                      ' | time: $request_time'
+                      ' | length: req $request_length / res $body_bytes_sent'
+                      ' | agent: $http_user_agent'
+                      ' | referer: $http_referer'
+                      ' | gzip ratio: $gzip_ratio';
+    access_log syslog:server=unix:/dev/log custom;
+
+    # server {
+    #     listen 80;
+
+    #     # Required to be able to run `certbot -w /var/www/html/`
+    #     location /.well-known/ {
+    #         root /var/www/html/;
+    #     }
+
+    #     location / {
+    #         return 301 https://$host$request_uri;
+    #     }
+    # }
 
 
-    upstreams.inventaire.extraConfig = ''
-      server 127.0.0.1:3006 fail_timeout=5s;
-      server 127.0.0.1:3007 backup;
-    '';
 
-    commonHttpConfig = ''
-      # Defining a log format arbitrary named "custom"
-      # doc: http://nginx.org/en/docs/http/ngx_http_log_module.html#log_format
-      log_format custom '$remote_addr - $remote_user "$request" $status'
-                        ' | time: $request_time'
-                        ' | length: req $request_length / res $body_bytes_sent'
-                        ' | agent: $http_user_agent'
-                        ' | referer: $http_referer'
-                        ' | gzip ratio: $gzip_ratio';
-      access_log syslog:server=unix:/dev/log custom;
+  '';
 
-      # server {
-      #     listen 80;
+  virtualHosts = {
+    "www.${domain-name}" = {
+      locations."/".return = "301 http://example.com$request_uri";
+      extraConfig = ''
+        ssl_session_timeout 1d;
+        ssl_session_cache   shared:SSL:50m;
+        ssl_session_tickets off;
 
-      #     # Required to be able to run `certbot -w /var/www/html/`
-      #     location /.well-known/ {
-      #         root /var/www/html/;
-      #     }
+        # Source: https://ssl-config.mozilla.org/#server=nginx&server-version=1.10.3&config=intermediate&openssl-version=1.0.2g&hsts=false
+        ssl_protocols TLSv1.2;
+        ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384;
+        ssl_prefer_server_ciphers off;
 
-      #     location / {
-      #         return 301 https://$host$request_uri;
-      #     }
-      # }
+        ssl_stapling        on;
+        ssl_stapling_verify on;
+      '';
+    };
 
+    "${domain-name}" = {
+      http2 = true;
 
-
-    '';
-
-    virtualHosts = {
-      "www.${domain-name}" = {
-        locations."/".return = "301 http://example.com$request_uri";
-        extraConfig = ''
-          ssl_session_timeout 1d;
+      extraConfig = ''
+          ## source: https://mozilla.github.io/server-side-tls/ssl-config-generator/
+          ssl_prefer_server_ciphers on;
+          ssl_protocols       TLSv1 TLSv1.1 TLSv1.2;
+          ssl_session_timeout 5m;
           ssl_session_cache   shared:SSL:50m;
           ssl_session_tickets off;
-
-          # Source: https://ssl-config.mozilla.org/#server=nginx&server-version=1.10.3&config=intermediate&openssl-version=1.0.2g&hsts=false
-          ssl_protocols TLSv1.2;
-          ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384;
-          ssl_prefer_server_ciphers off;
-
+          ssl_dhparam         ${project-root}/nginx/dhparam.pem;
+          ssl_ciphers         'ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:AES:CAMELLIA:DES-CBC3-SHA:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!aECDH:!EDH-DSS-DES-CBC3-SHA:!EDH-RSA-DES-CBC3-SHA:!KRB5-DES-CBC3-SHA';
           ssl_stapling        on;
           ssl_stapling_verify on;
-        '';
-      };
 
+          # source: https://scotthelme.co.uk/hardening-your-http-response-headers/#x-content-type-options
+          add_header X-Content-Type-Options 'nosniff' always;
 
-      "${domain-name}" = {
-        http2 = true;
+          # source: https://scotthelme.co.uk/a-new-security-header-referrer-policy/
+          add_header Referrer-Policy 'no-referrer-when-downgrade' always;
 
-        extraConfig = ''
-            ## source: https://mozilla.github.io/server-side-tls/ssl-config-generator/
-            ssl_prefer_server_ciphers on;
-            ssl_protocols       TLSv1 TLSv1.1 TLSv1.2;
-            ssl_session_timeout 5m;
-            ssl_session_cache   shared:SSL:50m;
-            ssl_session_tickets off;
-            ssl_dhparam         ${project-root}/nginx/dhparam.pem;
-            ssl_ciphers         'ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:AES:CAMELLIA:DES-CBC3-SHA:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!aECDH:!EDH-DSS-DES-CBC3-SHA:!EDH-RSA-DES-CBC3-SHA:!KRB5-DES-CBC3-SHA';
-            ssl_stapling        on;
-            ssl_stapling_verify on;
+          client_max_body_size 5M;
+
+          # As long as no secret/sensible data are passed in the body, the BREACH exploit on TLS+compression shouldn't be a concern. Right?
+          # https://en.wikipedia.org/wiki/BREACH_(security_exploit)#Mitigation
+          # http://security.stackexchange.com/questions/39925/breach-a-new-attack-against-http-what-can-be-done
+          # It could be that it was solved by HTTP/2 \o/ https://blog.cloudflare.com/hpack-the-silent-killer-feature-of-http-2
+          gzip on;
+          gzip_types *;
+
+          # On-The-Fly Image Resizer
+
+          # URLs look like /img/users/300x1200/8185d4e039f52b4faa06a1c277133e9a8232551b
+          # for locally hosted images
+          # or /img/remote/300x1200/630022006?href=http%3A%2F%2Fescaped.url
+          # for remote images, with 630022006 being the hash of the passed href
+          # generated by [hashCode](https://github.com/inventaire/inventaire/blob/35b1e63/server/lib/utils/base.js#L69-L80)
+
+          # The hack: I couldn't make the proxy_store work: it never hits the cache, but
+          # it does put the resized images in /tmp/nginx/resize, so using a try_files
+          # directive instead
+
+          # Do not remove the (.*) capture group as it seems to be required by the try_files
+          location ~ ^/img/(users|entities|assets)/(.*) {
+
+              # source: https://scotthelme.co.uk/hardening-your-http-response-headers/#x-content-type-options
+              add_header X-Content-Type-Options 'nosniff' always;
+
+              # source: https://scotthelme.co.uk/a-new-security-header-referrer-policy/
+              add_header Referrer-Policy 'no-referrer-when-downgrade' always;
+
+              root ${statePath}/nginx/resize;
+              default_type "image/jpeg";
+              add_header Cache-Control "immutable";
+              add_header X-File-Cache "hit";
+              try_files $uri @invimg;
+              limit_except GET {
+                  deny  all;
+              }
+          }
+
+          # Same as above, but without the immutable
+          location ~ ^/img/remote/(.*) {
+
 
             # source: https://scotthelme.co.uk/hardening-your-http-response-headers/#x-content-type-options
             add_header X-Content-Type-Options 'nosniff' always;
@@ -76,272 +125,222 @@
             # source: https://scotthelme.co.uk/a-new-security-header-referrer-policy/
             add_header Referrer-Policy 'no-referrer-when-downgrade' always;
 
-            client_max_body_size 5M;
+             root ${statePath}/nginx/resize;
+             default_type "image/jpeg";
+             add_header X-File-Cache "hit";
+             try_files $uri @invimg;
+             limit_except GET {
+                 deny  all;
+             }
+          }
 
-            # As long as no secret/sensible data are passed in the body, the BREACH exploit on TLS+compression shouldn't be a concern. Right?
-            # https://en.wikipedia.org/wiki/BREACH_(security_exploit)#Mitigation
-            # http://security.stackexchange.com/questions/39925/breach-a-new-attack-against-http-what-can-be-done
-            # It could be that it was solved by HTTP/2 \o/ https://blog.cloudflare.com/hpack-the-silent-killer-feature-of-http-2
-            gzip on;
-            gzip_types *;
+          location ~ ^/img/(\d+)x(\d+)/(.*) {
+              return 404;
+          }
 
-            # On-The-Fly Image Resizer
-
-            # URLs look like /img/users/300x1200/8185d4e039f52b4faa06a1c277133e9a8232551b
-            # for locally hosted images
-            # or /img/remote/300x1200/630022006?href=http%3A%2F%2Fescaped.url
-            # for remote images, with 630022006 being the hash of the passed href
-            # generated by [hashCode](https://github.com/inventaire/inventaire/blob/35b1e63/server/lib/utils/base.js#L69-L80)
-
-            # The hack: I couldn't make the proxy_store work: it never hits the cache, but
-            # it does put the resized images in /tmp/nginx/resize, so using a try_files
-            # directive instead
-
-            # Do not remove the (.*) capture group as it seems to be required by the try_files
-            location ~ ^/img/(users|entities|assets)/(.*) {
-
-                # source: https://scotthelme.co.uk/hardening-your-http-response-headers/#x-content-type-options
-                add_header X-Content-Type-Options 'nosniff' always;
-
-                # source: https://scotthelme.co.uk/a-new-security-header-referrer-policy/
-                add_header Referrer-Policy 'no-referrer-when-downgrade' always;
-
-                root ${statePath}/nginx/resize;
-                default_type "image/jpeg";
-                add_header Cache-Control "immutable";
-                add_header X-File-Cache "hit";
-                try_files $uri @invimg;
-                limit_except GET {
-                    deny  all;
-                }
-            }
-
-            # Same as above, but without the immutable
-            location ~ ^/img/remote/(.*) {
+          location @invimg {
 
 
-              # source: https://scotthelme.co.uk/hardening-your-http-response-headers/#x-content-type-options
-              add_header X-Content-Type-Options 'nosniff' always;
+            # source: https://scotthelme.co.uk/hardening-your-http-response-headers/#x-content-type-options
+            add_header X-Content-Type-Options 'nosniff' always;
 
-              # source: https://scotthelme.co.uk/a-new-security-header-referrer-policy/
-              add_header Referrer-Policy 'no-referrer-when-downgrade' always;
+            # source: https://scotthelme.co.uk/a-new-security-header-referrer-policy/
+            add_header Referrer-Policy 'no-referrer-when-downgrade' always;
 
-               root ${statePath}/nginx/resize;
-               default_type "image/jpeg";
-               add_header X-File-Cache "hit";
-               try_files $uri @invimg;
-               limit_except GET {
-                   deny  all;
-               }
-            }
+            default_type "image/jpeg";
+            add_header Cache-Control "immutable";
+            add_header X-File-Cache "miss";
+            proxy_temp_path      ${statePath}/nginx/tmp;
+            proxy_store          ${statePath}/nginx/resize/$uri;
+            proxy_store_access   user:rw  group:rw  all:r;
+            proxy_http_version 1.1;
+            proxy_pass http://inventaire;
+          }
 
-            location ~ ^/img/(\d+)x(\d+)/(.*) {
-                return 404;
-            }
+          # following aliases made in order to respect the url structure
+          # the server alone would follow: especially, mounting /static on /public
+          root  ${project-root}/inventaire/client;
+          location /public/ {
+              limit_except GET {
+                  deny  all;
+              }
+              gzip_static on;
+              # Let resources that can't be cache busted
+              # - such as opensearch.xml or robots.txt -
+              # out of this caching policy
+              if ($uri ~ "^/public/(dist|fonts)/" ) {
 
-            location @invimg {
+
+                  # source: https://scotthelme.co.uk/hardening-your-http-response-headers/#x-content-type-options
+                  add_header X-Content-Type-Options 'nosniff' always;
+
+                  # source: https://scotthelme.co.uk/a-new-security-header-referrer-policy/
+                  add_header Referrer-Policy 'no-referrer-when-downgrade' always;
 
 
-              # source: https://scotthelme.co.uk/hardening-your-http-response-headers/#x-content-type-options
-              add_header X-Content-Type-Options 'nosniff' always;
+                  add_header Cache-Control "immutable";
+                  # All headers that aren't in the last block won't be taken in account
+                  # thus the need to have CORS headers here too
+                  add_header 'Access-Control-Allow-Origin' '*' always;
+                  add_header 'Access-Control-Allow-Methods' 'GET' always;
+              }
+          }
 
-              # source: https://scotthelme.co.uk/a-new-security-header-referrer-policy/
-              add_header Referrer-Policy 'no-referrer-when-downgrade' always;
+          # Pass the request to the node.js server
+          # with some correct headers for proxy-awareness
+          location /api {
+              # Let the server decide when CORS headers should be added
 
-              default_type "image/jpeg";
-              add_header Cache-Control "immutable";
-              add_header X-File-Cache "miss";
-              proxy_temp_path      ${statePath}/nginx/tmp;
-              proxy_store          ${statePath}/nginx/resize/$uri;
-              proxy_store_access   user:rw  group:rw  all:r;
+              proxy_set_header X-Real-IP $remote_addr;
+              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+              proxy_set_header Host $host;
+              proxy_set_header X-NginX-Proxy true;
+
+              # Set a large value to let the API determine the appropriate
+              # timeout per endpoint
+              # http://nginx.org/en/docs/http/ngx_http_proxy_module.html#proxy_read_timeout
+              proxy_read_timeout 3600;
+
+              proxy_redirect off;
+              proxy_http_version 1.1;
+
+              # Redirect Prerender API requests to their the alt server
+              if ($remote_addr = ${prerender-ip}) {
+                  proxy_pass http://127.0.0.1:3007;
+                  break;
+              }
+
+              proxy_pass http://inventaire;
+
+              # Handle Web Socket connections
+              # proxy_http_version 1.1;
+              # proxy_set_header Upgrade $http_upgrade;
+              # proxy_set_header Connection "upgrade";
+          }
+
+          # Let the API server handle all but /public JSON and RSS requests
+          location ~ "^/[^p].*\.(json|rss)$" {
+              limit_except GET {
+                  deny  all;
+              }
+              # Same as /api, couldn't find a proper way to DRY it
+              # The 'include' strategy (http://stackoverflow.com/a/35375548/3324977)
+              # failed as Nginx rejected the proxy directives at this place
+              proxy_set_header X-Real-IP $remote_addr;
+              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+              proxy_set_header Host $host;
+              proxy_set_header X-NginX-Proxy true;
               proxy_http_version 1.1;
               proxy_pass http://inventaire;
-            }
+              proxy_redirect off;
+          }
 
-            # following aliases made in order to respect the url structure
-            # the server alone would follow: especially, mounting /static on /public
-            root  ${project-root}/inventaire/client;
-            location /public/ {
-                limit_except GET {
-                    deny  all;
-                }
-                gzip_static on;
-                # Let resources that can't be cache busted
-                # - such as opensearch.xml or robots.txt -
-                # out of this caching policy
-                if ($uri ~ "^/public/(dist|fonts)/" ) {
+          location = /favicon.ico {
 
+        # source: https://scotthelme.co.uk/hardening-your-http-response-headers/#x-content-type-options
+        add_header X-Content-Type-Options 'nosniff' always;
 
-                    # source: https://scotthelme.co.uk/hardening-your-http-response-headers/#x-content-type-options
-                    add_header X-Content-Type-Options 'nosniff' always;
+        # source: https://scotthelme.co.uk/a-new-security-header-referrer-policy/
+        add_header Referrer-Policy 'no-referrer-when-downgrade' always;
 
-                    # source: https://scotthelme.co.uk/a-new-security-header-referrer-policy/
-                    add_header Referrer-Policy 'no-referrer-when-downgrade' always;
+              try_files /public/$uri /public/images/$uri;
+              expires 30d;
+              add_header Cache-Control "public";
+          }
 
+          location = /robots.txt {
 
-                    add_header Cache-Control "immutable";
-                    # All headers that aren't in the last block won't be taken in account
-                    # thus the need to have CORS headers here too
-                    add_header 'Access-Control-Allow-Origin' '*' always;
-                    add_header 'Access-Control-Allow-Methods' 'GET' always;
-                }
-            }
+        # source: https://scotthelme.co.uk/hardening-your-http-response-headers/#x-content-type-options
+        add_header X-Content-Type-Options 'nosniff' always;
 
-            # Pass the request to the node.js server
-            # with some correct headers for proxy-awareness
-            location /api {
-                # Let the server decide when CORS headers should be added
+        # source: https://scotthelme.co.uk/a-new-security-header-referrer-policy/
+        add_header Referrer-Policy 'no-referrer-when-downgrade' always;
 
-                proxy_set_header X-Real-IP $remote_addr;
-                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-                proxy_set_header Host $host;
-                proxy_set_header X-NginX-Proxy true;
+              gzip_static on;
+              try_files /public/$uri /$uri;
+              expires 1d;
+              add_header Cache-Control "public";
+          }
 
-                # Set a large value to let the API determine the appropriate
-                # timeout per endpoint
-                # http://nginx.org/en/docs/http/ngx_http_proxy_module.html#proxy_read_timeout
-                proxy_read_timeout 3600;
+          # Prevent exposing git folders such as /public/i18n/.git
+          # For why this rule takes precedence over location /public/
+          # see http://stackoverflow.com/a/34262192/3324977
+          location ~ /\.git {
+              deny all;
+          }
 
-                proxy_redirect off;
-                proxy_http_version 1.1;
+          # Required to be able to run `certbot -w /var/www/html/`
+          location /.well-known/ {
+              root /var/www/html/;
+          }
 
-                # Redirect Prerender API requests to their the alt server
-                if ($remote_addr = ${prerender-ip}) {
-                    proxy_pass http://127.0.0.1:3007;
-                    break;
-                }
+          location / {
+              gzip_static on;
+              try_files $uri @prerender;
+              limit_except GET {
+                 deny all;
+             }
+          }
 
-                proxy_pass http://inventaire;
+          # Dispatching requests between the JS-rendered client (for browsers)
+          # or the prerendered version (for bots, curl and alikes)
+          # To setup a Prerender server, see https://github.com/inventaire/prerender
 
-                # Handle Web Socket connections
-                # proxy_http_version 1.1;
-                # proxy_set_header Upgrade $http_upgrade;
-                # proxy_set_header Connection "upgrade";
-            }
+          # Adapted from https://gist.github.com/thoop/8165802
+          location @prerender {
+              #proxy_set_header X-Prerender-Token YOUR_TOKEN;
 
-            # Let the API server handle all but /public JSON and RSS requests
-            location ~ "^/[^p].*\.(json|rss)$" {
-                limit_except GET {
-                    deny  all;
-                }
-                # Same as /api, couldn't find a proper way to DRY it
-                # The 'include' strategy (http://stackoverflow.com/a/35375548/3324977)
-                # failed as Nginx rejected the proxy directives at this place
-                proxy_set_header X-Real-IP $remote_addr;
-                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-                proxy_set_header Host $host;
-                proxy_set_header X-NginX-Proxy true;
-                proxy_http_version 1.1;
-                proxy_pass http://inventaire;
-                proxy_redirect off;
-            }
+              set $prerender 0;
+              if ($http_user_agent ~* "bot|index|spider|crawl|facebookexternalhit|embedly|quora|outbrain|pinterest|vkShare|W3C_Validator|curl|wget|slurp|Discourse|Iframely") {
+                  set $prerender 1;
+              }
+              if ($args ~ "_escaped_fragment_") {
+                  set $prerender 1;
+              }
+              if ($args ~ "__nojs") {
+                  set $prerender 1;
+              }
+              if ($http_user_agent ~ "Prerender") {
+                  set $prerender 0;
+              }
+              if ($uri ~ "\.(js|css|xml|less|png|jpg|jpeg|gif|pdf|doc|txt|ico|rss|zip|mp3|rar|exe|wmv|doc|avi|ppt|mpg|mpeg|tif|wav|mov|psd|ai|xls|mp4|m4a|swf|dat|dmg|iso|flv|m4v|torrent|ttf|woff)") {
+                  set $prerender 0;
+              }
 
-            location = /favicon.ico {
+              if ($prerender = 1) {
+                  #setting prerender as a variable forces DNS resolution since nginx caches IPs and doesnt play well with load balancing
+                  # set $prerender "92.222.76.42:3000";
+                  rewrite .* /$scheme://$host$request_uri? break;
+                  # proxy_http_version 1.1;
+                  proxy_pass ${prerender-instance};
+              }
+              if ($prerender = 0) {
+                  # source: https://scotthelme.co.uk/a-new-security-header-referrer-policy/
+                  add_header Referrer-Policy 'no-referrer-when-downgrade' always;
 
-          # source: https://scotthelme.co.uk/hardening-your-http-response-headers/#x-content-type-options
-          add_header X-Content-Type-Options 'nosniff' always;
+                  # source: https://gist.github.com/plentz/6737338
+                  add_header X-XSS-Protection "1; mode=block; report=/api/reports?action=csp-report;" always;
+                  add_header X-Frame-Options "SAMEORIGIN" always;
+                  add_header X-Content-Type-Options "nosniff" always;
+                  add_header Strict-Transport-Security "max-age=31536000;" always;
 
-          # source: https://scotthelme.co.uk/a-new-security-header-referrer-policy/
-          add_header Referrer-Policy 'no-referrer-when-downgrade' always;
+                  # Keep in sync with server/middlewares/security.coffee@inventaire/inventaire
+                  set $csp "default-src 'self' www.wikidata.org; child-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' https://commons.wikimedia.org https://api.tiles.mapbox.com https://piwik.allmende.io data:; report-uri /api/reports?action=csp-report;";
+                  add_header Content-Security-Policy $csp; # Standard
+                  add_header X-Content-Security-Policy $csp; # Firefox <23 & IE 10, 11
+                  add_header X-WebKit-CSP $csp; # Safari <7 and Chrome <25
 
-                try_files /public/$uri /public/images/$uri;
-                expires 30d;
-                add_header Cache-Control "public";
-            }
+                  # index.html should always be fresh out of the server
+                  # time is negative => “Cache-Control: no-cache”
+                  # http://ngqinx.org/en/docs/http/ngx_http_headers_module.html
+                  # Those headers should be set here and not at "location /" as they would be ignored (cf http://serverfault.com/a/786248)
+                  expires -1;
 
-            location = /robots.txt {
-
-          # source: https://scotthelme.co.uk/hardening-your-http-response-headers/#x-content-type-options
-          add_header X-Content-Type-Options 'nosniff' always;
-
-          # source: https://scotthelme.co.uk/a-new-security-header-referrer-policy/
-          add_header Referrer-Policy 'no-referrer-when-downgrade' always;
-
-                gzip_static on;
-                try_files /public/$uri /$uri;
-                expires 1d;
-                add_header Cache-Control "public";
-            }
-
-            # Prevent exposing git folders such as /public/i18n/.git
-            # For why this rule takes precedence over location /public/
-            # see http://stackoverflow.com/a/34262192/3324977
-            location ~ /\.git {
-                deny all;
-            }
-
-            # Required to be able to run `certbot -w /var/www/html/`
-            location /.well-known/ {
-                root /var/www/html/;
-            }
-
-            location / {
-                gzip_static on;
-                try_files $uri @prerender;
-                limit_except GET {
-                   deny all;
-               }
-            }
-
-            # Dispatching requests between the JS-rendered client (for browsers)
-            # or the prerendered version (for bots, curl and alikes)
-            # To setup a Prerender server, see https://github.com/inventaire/prerender
-
-            # Adapted from https://gist.github.com/thoop/8165802
-            location @prerender {
-                #proxy_set_header X-Prerender-Token YOUR_TOKEN;
-
-                set $prerender 0;
-                if ($http_user_agent ~* "bot|index|spider|crawl|facebookexternalhit|embedly|quora|outbrain|pinterest|vkShare|W3C_Validator|curl|wget|slurp|Discourse|Iframely") {
-                    set $prerender 1;
-                }
-                if ($args ~ "_escaped_fragment_") {
-                    set $prerender 1;
-                }
-                if ($args ~ "__nojs") {
-                    set $prerender 1;
-                }
-                if ($http_user_agent ~ "Prerender") {
-                    set $prerender 0;
-                }
-                if ($uri ~ "\.(js|css|xml|less|png|jpg|jpeg|gif|pdf|doc|txt|ico|rss|zip|mp3|rar|exe|wmv|doc|avi|ppt|mpg|mpeg|tif|wav|mov|psd|ai|xls|mp4|m4a|swf|dat|dmg|iso|flv|m4v|torrent|ttf|woff)") {
-                    set $prerender 0;
-                }
-
-                if ($prerender = 1) {
-                    #setting prerender as a variable forces DNS resolution since nginx caches IPs and doesnt play well with load balancing
-                    # set $prerender "92.222.76.42:3000";
-                    rewrite .* /$scheme://$host$request_uri? break;
-                    # proxy_http_version 1.1;
-                    proxy_pass ${prerender-instance};
-                }
-                if ($prerender = 0) {
-                    # source: https://scotthelme.co.uk/a-new-security-header-referrer-policy/
-                    add_header Referrer-Policy 'no-referrer-when-downgrade' always;
-
-                    # source: https://gist.github.com/plentz/6737338
-                    add_header X-XSS-Protection "1; mode=block; report=/api/reports?action=csp-report;" always;
-                    add_header X-Frame-Options "SAMEORIGIN" always;
-                    add_header X-Content-Type-Options "nosniff" always;
-                    add_header Strict-Transport-Security "max-age=31536000;" always;
-
-                    # Keep in sync with server/middlewares/security.coffee@inventaire/inventaire
-                    set $csp "default-src 'self' www.wikidata.org; child-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' https://commons.wikimedia.org https://api.tiles.mapbox.com https://piwik.allmende.io data:; report-uri /api/reports?action=csp-report;";
-                    add_header Content-Security-Policy $csp; # Standard
-                    add_header X-Content-Security-Policy $csp; # Firefox <23 & IE 10, 11
-                    add_header X-WebKit-CSP $csp; # Safari <7 and Chrome <25
-
-                    # index.html should always be fresh out of the server
-                    # time is negative => “Cache-Control: no-cache”
-                    # http://ngqinx.org/en/docs/http/ngx_http_headers_module.html
-                    # Those headers should be set here and not at "location /" as they would be ignored (cf http://serverfault.com/a/786248)
-                    expires -1;
-
-                    rewrite .* /public/index.html break;
-                }
-            }
-        '';
-      };
-
+                  rewrite .* /public/index.html break;
+              }
+          }
+      '';
     };
-  }
+
+  };
+}
