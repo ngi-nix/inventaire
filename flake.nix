@@ -40,6 +40,9 @@
               nixpkgs.lib.mkIf (self ? rev) self.rev;
 
             # Network configuration.
+
+            # useDHCP is generally considered to better be turned off in favor
+            # of <adapter>.useDHCP
             networking.useDHCP = false;
             networking.firewall.allowedTCPPorts = [ 80 3006 ];
 
