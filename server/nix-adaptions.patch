@@ -8,5 +8,3 @@ index bf3593e1..b3c54f67 100644
    "main": "server/server.js",
 +  "version": "0.0.1",
    "scripts": {
-     "backup-databases": "./scripts/backup_databases/backup_databases.js",
-     "couch2elastic4sync:init": "./scripts/couch2elastic4sync/init.js",

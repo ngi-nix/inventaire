@@ -1,14 +1,11 @@
 --- node-packages.nix			2021-03-25 20:17:40.804532834 +0100
 +++ node-packages-patched.nix	2021-03-25 20:19:56.324000000 +0100
-@@ -3,7 +3,7 @@
- {nodeEnv, fetchurl, fetchgit, nix-gitignore, stdenv, lib, globalBuildInputs ? []}:
+@@ -3,4 +3,4 @@
+ {nodeEnv, fetchurl, fetchgit, globalBuildInputs ? []}:
 
  let
 -  sources = {
 +  rawSources = {
-     "@babel/code-frame-7.5.5" = {
-       name = "_at_babel_slash_code-frame";
-       packageName = "@babel/code-frame";
 @@ -4489,7 +4489,7 @@
        };
      };
@@ -18,7 +15,7 @@
      name = "inventaire";
      packageName = "inventaire";
      version = "0.0.1";
-@@ -5259,24 +5259,16 @@
+@@ -5259,12 +5259,16 @@
      production = false;
      bypassCache = true;
      reconstructLock = false;
@@ -30,16 +27,6 @@
 -  tarball = nodeEnv.buildNodeSourceDist args;
 -  package = nodeEnv.buildNodePackage args;
 -  shell = nodeEnv.buildNodeShell args;
--  nodeDependencies = nodeEnv.buildNodeDependencies (lib.overrideExisting args {
--    src = stdenv.mkDerivation {
--      name = args.name + "-package-json";
--      src = nix-gitignore.gitignoreSourcePure [
--        "*"
--        "!package.json"
--        "!package-lock.json"
--      ] args.src;
--      dontBuild = true;
--      installPhase = "mkdir -p $out; cp -r ./* $out;";
 +  } // extraArgs;
 +
 +  f = config:
@@ -47,8 +34,7 @@
 +      tarball = nodeEnv.buildNodeSourceDist (args config);
 +      package = nodeEnv.buildNodePackage (args config);
 +      shell = nodeEnv.buildNodeShell (args config);
-     };
--  });
++    };
 +in
 +lib.makeOverridable f {
 +  sources = rawSources;
