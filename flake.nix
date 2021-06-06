@@ -49,7 +49,7 @@
               config = builtins.readFile ./test/local.js;
             };
 
-            # dependency services
+            # Dependency services.
             services.couchdb = {
               enable = true;
               extraConfig = ''

@@ -32,7 +32,7 @@ in stdenv.mkDerivation {
     # for a reason the inventaire-client cannot be used directly
     # webpack build will ignore almost all sources
     ln -s ${inventaire-client}/lib/node_modules/inventaire-client/node_modules ./node_modules
-    ls node_modules/ -la
+    ls -la node_modules/
     PATH=$PATH:${inventaire-client}/bin
     PATH=$PATH:$PWD/node_modules/.bin
 

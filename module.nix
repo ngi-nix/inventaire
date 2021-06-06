@@ -23,7 +23,7 @@ in {
     config = mkOption {
       default = "";
       description =
-        "Inventair configuration. (Typically a JavaScript file overrideing https://github.com/inventaire/inventaire/blob/master/config/default.js)";
+        "Inventair configuration. (Typically a JavaScript file overriding https://github.com/inventaire/inventaire/blob/master/config/default.js)";
       type = types.str;
     };
 
@@ -49,7 +49,7 @@ in {
 
       wantedBy = [ "multi-user.target" ];
       after = [ "network.target" ];
-      description = "Start the inventaire server.";
+      description = "Start the inventaire prerender.";
       serviceConfig = {
         WorkingDirectory =
           "${pkgs.inventaire.prerender}/lib/node_modules/prerender";

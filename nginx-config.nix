@@ -9,7 +9,7 @@
   '';
 
   commonHttpConfig = ''
-    # Defining a log format arbitrary named "custom"
+    # Defining a log format arbitrarily named "custom"
     # doc: http://nginx.org/en/docs/http/ngx_http_log_module.html#log_format
     log_format custom '$remote_addr - $remote_user "$request" $status'
                       ' | time: $request_time'
