@@ -24,56 +24,22 @@
       };
     in rec {
       inherit overlay;
-      nixosModule = import ./module.nix;
+      nixosModules."inventaire" = (import ./module/inventaire.nix {inherit overlay;}).module;
       nixosConfigurations."container" = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
-          ({ pkgs, ... }: {
-            imports = [ nixosModule ];
-            nixpkgs.overlays = [ overlay ];
-
-            boot.isContainer = true;
-
-            # Let 'nixos-version --json' know about the Git revision
-            # of this flake.
-            system.configurationRevision =
-              nixpkgs.lib.mkIf (self ? rev) self.rev;
-
-            # Network configuration.
-
-            # useDHCP is generally considered to better be turned off in favor
-            # of <adapter>.useDHCP
-            networking.useDHCP = false;
-            networking.firewall.allowedTCPPorts = [ 80 3006 ];
-
-            # Enable the inventaire server.
-            services.inventaire = {
-              enable = true;
-              config = builtins.readFile ./test/local.js;
-            };
-
-            # Dependency services.
-            services.couchdb = {
-              enable = true;
-              extraConfig = ''
-                [admins]
-                yourcouchdbusername=yourcouchdbpassword
-              '';
-              package = pkgs.couchdb2;
-
-            };
-            services.nginx.enable = true;
-            services.elasticsearch.enable = true;
-            services.elasticsearch.package = pkgs.elasticsearch7;
-
-            nixpkgs.config.allowUnfree = true;
-          })
+         (import ./module/inventaire.nix {inherit overlay;}).default
+         ({...}: { boot.isContainer = true; }) 
         ];
       };
+
+
+
     } // flake-utils.lib.eachSystem [ "x86_64-linux" ] (system:
       let pkgs = import nixpkgs { inherit system overlay; };
       in rec {
-
+        checks = import ./checks/inventaire.nix {inherit nixpkgs system overlay; };
+        legacyPackages = overlay {} pkgs;
         apps.update-deps = flake-utils.lib.mkApp {
           drv = pkgs.writeScriptBin "update-deps"
             (builtins.readFile ./scripts/update.sh);
