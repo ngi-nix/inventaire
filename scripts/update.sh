@@ -2,6 +2,13 @@
 #! nix-shell -i bash -p nodePackages.node2nix git
 set -e
 
+# This script is an annoying necessity!
+# 1. inventaire does not provide the required `version` field which must be patched in
+# 2. the build procedure of inventaire includes cloning several git repositories into the `server` repo and build everything from there (notably not using submodules). In nix we cannot do that so we have to change the build script which requires changing the derivation source. Node2nix does not yet provide this function so it has to be patched in as well.
+
+
+
+
 # Updating server packages
 echo "Updating server packages"
 SERVER=$(mktemp -d)
