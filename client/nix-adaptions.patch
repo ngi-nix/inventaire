@@ -1,25 +1,3 @@
-diff --git a/scripts/postinstall b/scripts/postinstall
-index 8e50d884c76b4b350d9fc639b1755fc57016fd36..bf76d1dec3d7348e894543c62fdcd63f55dec5c5 100755
---- a/scripts/postinstall
-+++ b/scripts/postinstall
-@@ -7,12 +7,13 @@ npm run update-mentions
- ./scripts/build_i18n
- 
- # Make git hooks trackable (see https://stackoverflow.com/a/4457124/3324977)
--rm -rf .git/hooks
--ln -s ../.githooks .git/hooks
-+#rm -rf .git/hooks
-+#ln -s ../.githooks .git/hooks
- 
- # Initialize global variables to prevent triggering
- # an 'assignment to undeclared variable JSON_PIWIK' errors
- # as webpack imports this script as an ES module, thus activating strict mode
- # See https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Erreurs/Undeclared_var
--echo 'let JSON_PIWIK, AnalyticsTracker, piwik_log;' > ./vendor/piwik.js
--curl -sk https://piwik.allmende.io/piwik.js >> ./vendor/piwik.js
-+
-+#echo 'let JSON_PIWIK, AnalyticsTracker, piwik_log;' > ./vendor/piwik.js
-+# curl -sk https://piwik.allmende.io/piwik.js >> ./vendor/piwik.js
 diff --git a/package.json b/package.json
 index 24204177b341f86369c7012da9e4bde27de5ebe3..0be7a70fd09c732ca37bab9a5596480929d6f9ca 100644
 --- a/package.json
@@ -76,7 +54,7 @@ index 4165369cec6ad1dea0f4987a6082b973c99adcf6..6d2c597ad2f4d7140119ea9cb241897b
 @@ -3,22 +3,22 @@
  # Keep 'inventaire-i18n' as the directory name to make this directory easy to ignore
  # in gitignore or text editor exclude patterns
- 
+
 -[ -e inventaire-i18n ] && {
 -  cd inventaire-i18n
 -  # Update dist files
@@ -97,7 +75,7 @@ index 4165369cec6ad1dea0f4987a6082b973c99adcf6..6d2c597ad2f4d7140119ea9cb241897b
 +# } || {
 +#   git clone https://github.com/inventaire/inventaire-i18n.git --branch dist
 +# }
- 
+
 -mkdir -p ./public/i18n
 -echo "copying dist files"
 -cp inventaire-i18n/dist/client/* ./public/i18n
@@ -106,7 +84,7 @@ index 4165369cec6ad1dea0f4987a6082b973c99adcf6..6d2c597ad2f4d7140119ea9cb241897b
 +# cp inventaire-i18n/dist/client/* ./public/i18n
 +# echo "copying languages_data.js to app/lib"
 +# cp inventaire-i18n/dist/languages_data.js ./app/lib
- 
+
 -echo "copying languages_data.js to app/lib"
 -cp inventaire-i18n/dist/languages_data.js ./app/lib
  sed -i 's/module.exports =/export default/' ./app/lib/languages_data.js
@@ -118,7 +96,7 @@ index 27ebea33b386effe49d7fcd06671b26916880ab8..dbb44fe438abea2c7f1660c9ee2b47e0
 @@ -3,10 +3,10 @@
  # Exit on error (cf http://jvns.ca/blog/2017/03/26/bash-quirks/)
  set -e
- 
+
 -echo -e '\e[0;30mupdating i18n\e[0m'
 -./scripts/build_i18n
 -
@@ -127,11 +105,11 @@ index 27ebea33b386effe49d7fcd06671b26916880ab8..dbb44fe438abea2c7f1660c9ee2b47e0
  echo -e '\e[0;30mupdate mentions\e[0m'
 +node --version
  npm run update-mentions
- 
+
  echo -e '\e[0;30mwebpack build\e[0m'
 @@ -14,7 +14,7 @@ rm -f ./public/dist/*
  webpack --config ./bundle/webpack.config.prod.cjs --progress
- 
+
  utc_time=$(date -Ins | sed 's/,.*//')
 -last_commit_hash=$(git rev-parse --short HEAD)
 +last_commit_hash=$(git rev-parse --short HEAD || echo "XXXXXXXX")
@@ -145,7 +123,7 @@ index 27ebea33b386effe49d7fcd06671b26916880ab8..dbb44fe438abea2c7f1660c9ee2b47e0
 -  npm run generate-sitemaps
 +  # npm run generate-sitemaps
  fi
- 
+
  echo -e '\e[0;30mgzip assets\e[0m'
  gzip -9kf public/fonts/*
  gzip -9kf public/json/*
