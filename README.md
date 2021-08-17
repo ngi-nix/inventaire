@@ -25,7 +25,7 @@ $ nix run .#update-deps
 
 ## (Test) Setup
 
-If you are using nix flakes already, the `nixosConfiguration` can readily be included as `module` (see https://www.tweag.io/blog/2020-07-31-nixos-flakes/ as an example how). Otherwise, module and overlay can manually be imported as documented in `./test/test-configuration.nix`. The latter is supposed to be compatible with [nixos-shell](https://github.com/chrisfarms/nixos-shell).
+If you are using nix flakes already, the `nixosConfiguration` can readily be included as `module` (see https://www.tweag.io/blog/2020-07-31-nixos-flakes/ as an example how). Otherwise, module and overlay can manually be imported as documented [here](https://github.com/ngi-nix/inventaire/blob/master/module/inventaire.nix#L98-L128). The latter is supposed to be compatible with [nixos-shell](https://github.com/chrisfarms/nixos-shell).
 
 
 ### Dependency Services
