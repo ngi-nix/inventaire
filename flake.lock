@@ -1,0 +1,93 @@
+{
+  "nodes": {
+    "flake-utils": {
+      "locked": {
+        "lastModified": 1623875721,
+        "narHash": "sha256-A8BU7bjS5GirpAUv4QA+QnJ4CceLHkcXdRp4xITDB0s=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "f7e004a55b120c02ecb6219596820fcd32ca8772",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
+    "inventaire-client-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1623600057,
+        "narHash": "sha256-GeMXL0EQC3qcUwdRHA9f2iKYz7OXpgL74PPR1fd+3B0=",
+        "owner": "inventaire",
+        "repo": "inventaire-client",
+        "rev": "24bea129f1e0436a499504858e431df48498546e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "inventaire",
+        "repo": "inventaire-client",
+        "type": "github"
+      }
+    },
+    "inventaire-i18n-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1622153803,
+        "narHash": "sha256-Hwy4UNKw5yeqp8yLdtLWOK8WQ5DnxBFRKY53tm1pM+0=",
+        "owner": "inventaire",
+        "repo": "inventaire-i18n",
+        "rev": "f5da94baee01d1d3569fb900d5c9d92d00edb714",
+        "type": "github"
+      },
+      "original": {
+        "owner": "inventaire",
+        "ref": "dist",
+        "repo": "inventaire-i18n",
+        "type": "github"
+      }
+    },
+    "inventaire-server-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1623684750,
+        "narHash": "sha256-BAi8fzdRZg9EYH1MXyEROVjiqVSEk3nqoSSsH5G/KWE=",
+        "owner": "inventaire",
+        "repo": "inventaire",
+        "rev": "56fea61595ca896c658f9100e1eaf2ee656a2447",
+        "type": "github"
+      },
+      "original": {
+        "owner": "inventaire",
+        "repo": "inventaire",
+        "type": "github"
+      }
+    },
+    "nixpkgs": {
+      "locked": {
+        "lastModified": 1623915878,
+        "narHash": "sha256-jRNHeVsbSVfXXP1VjM2vqlYjOgIp3Fu/9IbM9agrjBo=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "bb4697102b18ff2b45240ef2f4260901c6812205",
+        "type": "github"
+      },
+      "original": {
+        "id": "nixpkgs",
+        "type": "indirect"
+      }
+    },
+    "root": {
+      "inputs": {
+        "flake-utils": "flake-utils",
+        "inventaire-client-src": "inventaire-client-src",
+        "inventaire-i18n-src": "inventaire-i18n-src",
+        "inventaire-server-src": "inventaire-server-src",
+        "nixpkgs": "nixpkgs"
+      }
+    }
+  },
+  "root": "root",
+  "version": 7
+}
